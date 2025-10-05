@@ -9,11 +9,7 @@ data:
     date-format %d/%b/%Y
     log-format %h %^[%d:%t %^] "%r" %s %b "%R" "%u"
 
-    real-time-html true
-    ws-url wss://stats.midagedev.com:443/ws
-
-    addr 0.0.0.0
-    port 7890
+    real-time-html false
 
     hl-header true
     json-pretty-print false
