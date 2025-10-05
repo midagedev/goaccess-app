@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: goaccess
-  namespace: goaccess
+  namespace: traefik-system
   labels:
     app: goaccess
 spec:
@@ -26,7 +26,6 @@ spec:
         volumeMounts:
         - name: traefik-logs
           mountPath: /var/log/traefik
-          readOnly: true
         - name: config
           mountPath: /etc/goaccess
         - name: data
@@ -45,9 +44,8 @@ spec:
             cpu: "500m"
       volumes:
       - name: traefik-logs
-        hostPath:
-          path: /var/lib/rancher/k3s/storage/pvc-67ffa300-0d79-4332-95a4-de5bc9a6d5e8
-          type: Directory
+        persistentVolumeClaim:
+          claimName: traefik-logs
       - name: config
         configMap:
           name: goaccess-config

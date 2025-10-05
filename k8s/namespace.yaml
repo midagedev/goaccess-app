@@ -1,4 +1,2 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: goaccess
+# GoAccess will be deployed in traefik-system namespace
+# This file is kept for reference but not used

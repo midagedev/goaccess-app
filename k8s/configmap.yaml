@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: goaccess-config
-  namespace: goaccess
+  namespace: traefik-system
 data:
   goaccess.conf: |
     time-format %H:%M:%S

@@ -2,24 +2,11 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: goaccess-data
-  namespace: goaccess
+  namespace: traefik-system
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  storageClassName: local-path
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: traefik-logs
-  namespace: goaccess
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 10Gi
   storageClassName: local-path
