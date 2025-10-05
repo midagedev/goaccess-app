@@ -62,7 +62,8 @@ spec:
             cpu: "500m"
       volumes:
       - name: logs
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: goaccess-logs
       - name: config
         configMap:
           name: goaccess-config
