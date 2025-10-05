@@ -11,7 +11,7 @@ spec:
       kind: Rule
       services:
         - name: goaccess
-          port: 7890
+          port: 80
       middlewares:
         - name: websocket-headers
   tls:

@@ -16,6 +16,29 @@ spec:
         app: goaccess
     spec:
       containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 3
       - name: goaccess
         image: allinurl/goaccess:latest
         command:
@@ -26,9 +49,12 @@ spec:
           mkdir -p /srv/report
 
           # Start GoAccess with real-time HTML and WebSocket server
-          tail -f /var/log/traefik/access.log | \
+          tail -F /var/log/traefik/access.log | \
           goaccess - \
             --config-file=/etc/goaccess/goaccess.conf \
+            --log-format='%h %^[%d:%t %^] "%r" %s %b "%R" "%u"' \
+            --date-format='%d/%b/%Y' \
+            --time-format='%H:%M:%S' \
             --real-time-html \
             --ws-url=wss://stats.midagedev.com \
             --origin=https://stats.midagedev.com \
@@ -46,20 +72,8 @@ spec:
           mountPath: /root/.goaccess
         ports:
         - containerPort: 7890
-          name: http
+          name: websocket
           protocol: TCP
-        livenessProbe:
-          tcpSocket:
-            port: 7890
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-        readinessProbe:
-          tcpSocket:
-            port: 7890
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
         resources:
           requests:
             memory: "128Mi"
@@ -79,3 +93,6 @@ spec:
           claimName: goaccess-data
       - name: db
         emptyDir: {}
+      - name: nginx-config
+        configMap:
+          name: nginx-config
