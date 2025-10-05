@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goaccess
+  namespace: goaccess
+  labels:
+    app: goaccess
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goaccess
+  template:
+    metadata:
+      labels:
+        app: goaccess
+    spec:
+      serviceAccountName: goaccess
+      containers:
+      - name: goaccess
+        image: allinurl/goaccess:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          kubectl logs -n traefik-system -l app.kubernetes.io/name=traefik -f | \
+          goaccess --config-file=/etc/goaccess/goaccess.conf -o /srv/report/index.html -
+        volumeMounts:
+        - name: config
+          mountPath: /etc/goaccess
+        - name: data
+          mountPath: /srv/report
+        - name: db
+          mountPath: /root/.goaccess
+        ports:
+        - containerPort: 7890
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+      volumes:
+      - name: config
+        configMap:
+          name: goaccess-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: goaccess-data
+      - name: db
+        emptyDir: {}

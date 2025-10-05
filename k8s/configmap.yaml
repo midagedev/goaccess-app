@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: goaccess-config
+  namespace: goaccess
+data:
+  goaccess.conf: |
+    time-format %H:%M:%S
+    date-format %d/%b/%Y
+    log-format %h %^[%d:%t %^] "%r" %s %b "%R" "%u"
+
+    real-time-html true
+    ws-url wss://stats.midagedev.com:443/ws
+
+    addr 0.0.0.0
+    port 7890
+
+    hl-header true
+    json-pretty-print false
+    no-color false
+    no-column-names false
+    no-csv-summary false
+    no-progress false
+    no-tab-scroll false
+    with-mouse false
+    agent-list false
+    with-output-resolver false
+    444-as-404 false
+    4xx-to-unique-count false
+    all-static-files false
+    double-decode false
+    ignore-crawlers false
+    crawlers-only false
+    ignore-statics req
+    real-os true
+    persist true
+    restore true
+
+    anonymize-ip false
+    keep-last 30
