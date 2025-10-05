@@ -1,0 +1,20 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: goaccess
+  namespace: traefik-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`stats.midagedev.com`)
+      kind: Rule
+      services:
+        - name: goaccess
+          port: 7890
+      middlewares:
+        - name: websocket-headers
+  tls:
+    certResolver: letsencrypt-prod
+    domains:
+      - main: stats.midagedev.com

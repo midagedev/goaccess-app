@@ -5,10 +5,29 @@ metadata:
   namespace: traefik-system
 data:
   goaccess.conf: |
+    # Log format for Traefik access logs
     time-format %H:%M:%S
     date-format %d/%b/%Y
     log-format %h %^[%d:%t %^] "%r" %s %b "%R" "%u"
 
+    # Real-time HTML settings
+    real-time-html true
+
+    # WebSocket server settings
+    ws-url wss://stats.midagedev.com
+    origin https://stats.midagedev.com
+
+    # Disable strict check for WebSocket origin
+    ws-origin-check false
+
+    # File output settings
+    output /srv/report/index.html
+
+    # HTML preferences
+    html-prefs {"theme":"darkGray","layout":"horizontal"}
+    html-report-title GoAccess Dashboard - Traefik Access Logs
+
+    # General settings
     hl-header true
     json-pretty-print false
     no-color false
@@ -19,16 +38,30 @@ data:
     with-mouse false
     agent-list false
     with-output-resolver false
+
+    # Status code settings
     444-as-404 false
     4xx-to-unique-count false
+
+    # Static files
     all-static-files false
+
+    # Request processing
     double-decode false
     ignore-crawlers false
     crawlers-only false
     ignore-statics req
+
+    # OS detection
     real-os true
+
+    # Data persistence
     persist true
     restore true
+    db-path /root/.goaccess/db
 
+    # Privacy
     anonymize-ip false
+
+    # Data retention
     keep-last 30
