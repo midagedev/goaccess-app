@@ -42,7 +42,7 @@ spec:
       - name: nginx
         image: nginx:alpine
         ports:
-        - containerPort: 7890
+        - containerPort: 80
           name: http
         volumeMounts:
         - name: data
