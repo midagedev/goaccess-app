@@ -58,7 +58,7 @@ data:
     # Data persistence
     persist true
     restore true
-    db-path /root/.goaccess/db
+    db-path /root/.goaccess
 
     # Privacy
     anonymize-ip false
