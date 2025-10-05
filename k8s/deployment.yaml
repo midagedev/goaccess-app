@@ -16,34 +16,17 @@ spec:
         app: goaccess
     spec:
       containers:
-      - name: log-tailer
-        image: bitnami/kubectl:latest
-        command:
-        - /bin/sh
-        - -c
-        - |
-          kubectl logs -n traefik-system -l app.kubernetes.io/name=traefik -f > /tmp/access.log
-        volumeMounts:
-        - name: logs
-          mountPath: /tmp
-        resources:
-          requests:
-            memory: "32Mi"
-            cpu: "50m"
-          limits:
-            memory: "64Mi"
-            cpu: "100m"
       - name: goaccess
         image: allinurl/goaccess:latest
         command:
         - /bin/sh
         - -c
         - |
-          sleep 5
-          tail -f /tmp/access.log | goaccess --config-file=/etc/goaccess/goaccess.conf -o /srv/report/index.html -
+          tail -f /var/log/traefik/access.log | goaccess --config-file=/etc/goaccess/goaccess.conf -o /srv/report/index.html -
         volumeMounts:
-        - name: logs
-          mountPath: /tmp
+        - name: traefik-logs
+          mountPath: /var/log/traefik
+          readOnly: true
         - name: config
           mountPath: /etc/goaccess
         - name: data
@@ -61,9 +44,10 @@ spec:
             memory: "256Mi"
             cpu: "500m"
       volumes:
-      - name: logs
-        persistentVolumeClaim:
-          claimName: goaccess-logs
+      - name: traefik-logs
+        hostPath:
+          path: /var/lib/rancher/k3s/storage/pvc-67ffa300-0d79-4332-95a4-de5bc9a6d5e8
+          type: Directory
       - name: config
         configMap:
           name: goaccess-config
@@ -72,4 +56,3 @@ spec:
           claimName: goaccess-data
       - name: db
         emptyDir: {}
-      serviceAccountName: goaccess
