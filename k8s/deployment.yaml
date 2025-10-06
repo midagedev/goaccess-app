@@ -56,7 +56,7 @@ spec:
             --date-format='%d/%b/%Y' \
             --time-format='%H:%M:%S' \
             --real-time-html \
-            --ws-url=wss://stats.midagedev.com \
+            --ws-url=wss://stats.midagedev.com/ws \
             --origin=https://stats.midagedev.com \
             --port=7890 \
             --addr=0.0.0.0 \

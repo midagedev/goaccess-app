@@ -5,9 +5,19 @@ metadata:
   namespace: traefik-system
 spec:
   entryPoints:
+    - web
     - websecure
   routes:
-    - match: Host(`stats.midagedev.com`)
+    # Main route for HTML dashboard
+    - match: Host(`stats.midagedev.com`) && !PathPrefix(`/ws`)
+      kind: Rule
+      services:
+        - name: goaccess
+          port: 80
+      middlewares:
+        - name: websocket-headers
+    # WebSocket route
+    - match: Host(`stats.midagedev.com`) && PathPrefix(`/ws`)
       kind: Rule
       services:
         - name: goaccess
@@ -18,3 +28,32 @@ spec:
     certResolver: letsencrypt-prod
     domains:
       - main: stats.midagedev.com
+---
+# HTTP to HTTPS redirect
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: goaccess-redirect
+  namespace: traefik-system
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`stats.midagedev.com`)
+      kind: Rule
+      middlewares:
+        - name: https-redirect
+      services:
+        - name: noop@internal
+          kind: TraefikService
+---
+# HTTPS redirect middleware
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: https-redirect
+  namespace: traefik-system
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
