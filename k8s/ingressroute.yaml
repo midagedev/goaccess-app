@@ -25,9 +25,7 @@ spec:
       middlewares:
         - name: websocket-headers
   tls:
-    certResolver: letsencrypt-prod
-    domains:
-      - main: stats.midagedev.com
+    secretName: goaccess-tls-cert
 ---
 # HTTP to HTTPS redirect
 apiVersion: traefik.io/v1alpha1
