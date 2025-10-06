@@ -9,6 +9,7 @@ data:
     time-format %H:%M:%S
     date-format %d/%b/%Y
     log-format %h %^[%d:%t %^] "%r" %s %b "%R" "%u"
+    log-file /var/log/traefik/access.log
 
     # Real-time HTML settings
     real-time-html true
@@ -16,6 +17,7 @@ data:
     # WebSocket server settings
     port 7890
     addr 0.0.0.0
+    ws-url wss://stats.midagedev.com
 
     # Disable strict check for WebSocket origin
     ws-origin-check false

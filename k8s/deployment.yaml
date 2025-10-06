@@ -19,10 +19,9 @@ spec:
       - name: goaccess
         image: allinurl/goaccess:latest
         command:
-        - /bin/sh
-        - -c
-        - |
-          tail -F /var/log/traefik/access.log | goaccess --config-file /etc/goaccess/goaccess.conf -
+        - goaccess
+        - -p
+        - /etc/goaccess/goaccess.conf
         volumeMounts:
         - name: traefik-logs
           mountPath: /var/log/traefik
