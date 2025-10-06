@@ -14,9 +14,17 @@
 - 별도의 IngressRoute와 Middleware로 구현
 - HTTP 접속 시 자동으로 HTTPS로 리다이렉트
 
-## 🔧 WebSocket 연결 상태
+## ✅ WebSocket 연결 (해결완료)
 
-### 현재 상황
+### 문제 및 해결
+- **문제**: WebSocket URL에 포트 7890이 포함되어 연결 실패
+  - 브라우저 오류: `WebSocket connection to 'wss://stats.midagedev.com:7890/ws' failed`
+- **원인**: GoAccess `--ws-url` 파라미터 설정 오류
+- **해결**:
+  - `--ws-url=wss://stats.midagedev.com:443/ws`로 변경
+  - 생성된 HTML에서 올바른 WebSocket URL 확인: `wss://stats.midagedev.com/ws`
+
+### 최종 구성
 - GoAccess WebSocket 서버: ✅ 포트 7890에서 정상 실행
 - nginx 프록시: ✅ `/ws` → `localhost:7890` 설정 완료
 - Traefik 라우팅: ✅ `/ws` 경로 별도 처리 설정
@@ -65,18 +73,14 @@ kubectl logs -n traefik-system deployment/goaccess -c nginx --tail=50
 kubectl logs -n traefik-system deployment/goaccess -c goaccess --tail=50
 ```
 
-## 🔄 다음 시도 사항
+## ✅ 모든 문제 해결 완료
 
-WebSocket이 여전히 연결되지 않는다면:
+### 해결 요약
+1. **SSL/HTTPS 접속**: Let's Encrypt 인증서 발급 완료
+2. **HTTP → HTTPS 리다이렉션**: 정상 작동
+3. **WebSocket 연결**: 올바른 URL로 설정되어 실시간 업데이트 가능
 
-1. **GoAccess 재시작 옵션 변경**
-   - `--origin` 파라미터 제거 또는 수정
-   - `--ws-url` 경로 변경 테스트
-
-2. **nginx 프록시 설정 조정**
-   - WebSocket 타임아웃 증가
-   - 추가 헤더 설정
-
-3. **Traefik Middleware 추가**
-   - WebSocket 전용 미들웨어 생성
-   - 헤더 전달 최적화
+### 접속 정보
+- Dashboard URL: https://stats.midagedev.com
+- WebSocket: wss://stats.midagedev.com/ws
+- SSL 인증서: Let's Encrypt (유효기간: 2025-10-06 ~ 2026-01-04)

@@ -16,63 +16,32 @@ spec:
         app: goaccess
     spec:
       containers:
-      - name: nginx
-        image: nginx:alpine
-        ports:
-        - containerPort: 80
-          name: http
-        volumeMounts:
-        - name: data
-          mountPath: /usr/share/nginx/html
-          readOnly: true
-        - name: nginx-config
-          mountPath: /etc/nginx/conf.d
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 3
       - name: goaccess
         image: allinurl/goaccess:latest
         command:
         - /bin/sh
         - -c
         - |
-          # Create report directory if it doesn't exist
-          mkdir -p /srv/report
-
-          # Start GoAccess with real-time HTML and WebSocket server
-          # Use --ws-url with explicit port 443 to prevent port 7890 from being added
           tail -F /var/log/traefik/access.log | \
           goaccess - \
             --log-format='%h %^[%d:%t %^] "%r" %s %b "%R" "%u"' \
             --date-format='%d/%b/%Y' \
             --time-format='%H:%M:%S' \
             --real-time-html \
-            --ws-url=wss://stats.midagedev.com/ws \
+            --ws-url=wss://stats.midagedev.com \
             --origin=https://stats.midagedev.com \
             --port=7890 \
-            --addr=0.0.0.0 \
-            -o /srv/report/index.html
+            --addr=0.0.0.0
         volumeMounts:
         - name: traefik-logs
           mountPath: /var/log/traefik
         - name: config
           mountPath: /etc/goaccess
-        - name: data
-          mountPath: /srv/report
         - name: db
           mountPath: /root/.goaccess
         ports:
         - containerPort: 7890
-          name: websocket
+          name: http
           protocol: TCP
         resources:
           requests:
@@ -88,11 +57,5 @@ spec:
       - name: config
         configMap:
           name: goaccess-config
-      - name: data
-        persistentVolumeClaim:
-          claimName: goaccess-data
       - name: db
         emptyDir: {}
-      - name: nginx-config
-        configMap:
-          name: nginx-config

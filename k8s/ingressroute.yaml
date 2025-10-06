@@ -8,22 +8,11 @@ spec:
     - web
     - websecure
   routes:
-    # Main route for HTML dashboard
-    - match: Host(`stats.midagedev.com`) && !PathPrefix(`/ws`)
+    - match: Host(`stats.midagedev.com`)
       kind: Rule
       services:
         - name: goaccess
-          port: 80
-      middlewares:
-        - name: websocket-headers
-    # WebSocket route
-    - match: Host(`stats.midagedev.com`) && PathPrefix(`/ws`)
-      kind: Rule
-      services:
-        - name: goaccess
-          port: 80
-      middlewares:
-        - name: websocket-headers
+          port: 7890
   tls:
     secretName: goaccess-tls-cert
 ---
