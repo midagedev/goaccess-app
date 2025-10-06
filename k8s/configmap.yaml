@@ -21,9 +21,6 @@ data:
     # Disable strict check for WebSocket origin
     ws-origin-check false
 
-    # File output settings
-    output /srv/report/index.html
-
     # HTML preferences
     html-prefs {"theme":"darkGray","layout":"horizontal"}
     html-report-title GoAccess Dashboard - Traefik Access Logs

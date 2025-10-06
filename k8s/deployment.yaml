@@ -22,16 +22,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          tail -F /var/log/traefik/access.log | \
-          goaccess - \
-            --log-format='%h %^[%d:%t %^] "%r" %s %b "%R" "%u"' \
-            --date-format='%d/%b/%Y' \
-            --time-format='%H:%M:%S' \
-            --real-time-html \
-            --ws-url=wss://stats.midagedev.com \
-            --origin=https://stats.midagedev.com \
-            --port=7890 \
-            --addr=0.0.0.0
+          tail -F /var/log/traefik/access.log | goaccess -
         volumeMounts:
         - name: traefik-logs
           mountPath: /var/log/traefik
