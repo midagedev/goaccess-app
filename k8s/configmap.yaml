@@ -14,7 +14,8 @@ data:
     real-time-html true
 
     # WebSocket server settings
-    ws-url wss://stats.midagedev.com
+    port 7890
+    addr 0.0.0.0
     origin https://stats.midagedev.com
 
     # Disable strict check for WebSocket origin
