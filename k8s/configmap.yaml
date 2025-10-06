@@ -16,7 +16,6 @@ data:
     # WebSocket server settings
     port 7890
     addr 0.0.0.0
-    origin https://stats.midagedev.com
 
     # Disable strict check for WebSocket origin
     ws-origin-check false
