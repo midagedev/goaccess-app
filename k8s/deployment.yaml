@@ -22,7 +22,7 @@ spec:
         - /bin/sh
         - -c
         - |
-          tail -F /var/log/traefik/access.log | goaccess -
+          tail -F /var/log/traefik/access.log | goaccess --config-file /etc/goaccess/goaccess.conf -
         volumeMounts:
         - name: traefik-logs
           mountPath: /var/log/traefik
